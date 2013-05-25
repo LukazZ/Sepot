@@ -1,0 +1,93 @@
+FUNGUJICI KONFIGURACE:
+----------------------
+
+- gpg (GnuPG) 2.0.19 (Gpg4win 2.1.1-34299-beta)
+
+		C:\Users\lukas.novak>gpg --version
+		gpg (GnuPG) 2.0.19 (Gpg4win 2.1.1-34299-beta)
+		libgcrypt 1.5.0
+		Copyright (C) 2012 Free Software Foundation, Inc.
+		License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+		This is free software: you are free to change and redistribute it.
+		There is NO WARRANTY, to the extent permitted by law.
+		
+		Home: C:/Users/lukas.novak/AppData/Roaming/gnupg
+		PodporovanT algoritmy:
+		Verejn≤ klfc: RSA, ELG, DSA
+		Ëifra: 3DES (S2), CAST5 (S3), BLOWFISH (S4), AES (S7), AES192 (S8),
+		       AES256 (S9), TWOFISH (S10), CAMELLIA128 (S11), CAMELLIA192 (S12),
+		       CAMELLIA256 (S13)
+		Hash: MD5 (H1), SHA1 (H2), RIPEMD160 (H3), SHA256 (H8), SHA384 (H9),
+		      SHA512 (H10), SHA224 (H11)
+		Komprese: Nezkomprimovﬂno (Z0), ZIP (Z1), ZLIB (Z2), BZIP2 (Z3)
+
+- python-gnupg-0.3.1
+
+
+NEFUNKCNI KONFIGURACE
+---------------------
+
+- gpg (GnuPG) 2.0.19 (Gpg4win 2.1.1-34299-beta)
+- python-gnupg-0.3.2
+
+
+	Exception typ 1:
+
+        # Problem pri raw stringu result.data na utf-8 pri pouziti windows gpg programu
+        # s gpg (GnuPG) 2.0.19 (Gpg4win 2.1.1-34299-beta)
+
+		  File "C:\lukaz\EclipseWorkspace\Sepot\sepot\user_profile.py", line 143, in <module>
+		    main()
+		  File "C:\lukaz\EclipseWorkspace\Sepot\sepot\user_profile.py", line 126, in main
+		    u = user_profile()
+		  File "C:\lukaz\EclipseWorkspace\Sepot\sepot\user_profile.py", line 39, in __init__
+		    self.gpg_init()
+		  File "C:\lukaz\EclipseWorkspace\Sepot\sepot\user_profile.py", line 86, in gpg_init
+		    self.gpg = gnupg.GPG(gnupghome=u"%s" % g)
+		  File "C:\Python27\lib\site-packages\gnupg.py", line 585, in __init__
+		    m = VERSION_RE.match(result.data.decode('utf-8'))
+		  File "C:\Python27\lib\encodings\utf_8.py", line 16, in decode
+		    return codecs.utf_8_decode(input, errors, True)
+		UnicodeDecodeError: 'utf8' codec can't decode byte 0xe9 in position 384: invalid continuation byte
+
+	Exception typ 2:
+
+        # Pokud ponechan bez konverze pracuje, ale nasledujici exception jsou hazeny
+        # 
+         Exception in thread Thread-9:
+         Traceback (most recent call last):
+           File "C:\Python27\lib\threading.py", line 551, in __bootstrap_inner
+             self.run()
+           File "C:\Python27\lib\threading.py", line 504, in run
+             self.__target(*self.__args, **self.__kwargs)
+           File "C:\Python27\lib\site-packages\gnupg.py", line 610, in _read_response
+             line = stream.readline()
+           File "C:\Python27\lib\codecs.py", line 530, in readline
+             data = self.read(readsize, firstline=True)
+           File "C:\Python27\lib\codecs.py", line 477, in read
+             newchars, decodedbytes = self.decode(data, self.errors)
+         UnicodeDecodeError: 'utf8' codec can't decode byte 0x9e in position 0: invalid start byte
+
+
+		result.data =  "gpg (GnuPG) 2.0.19 (Gpg4win 2.1.1-34299-beta)
+						libgcrypt 1.5.0
+						Copyright (C) 2012 Free Software Foundation, Inc.
+						License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+						This is free software: you are free to change and redistribute it.
+						There is NO WARRANTY, to the extent permitted by law.
+						
+						Home: C://Users//lukas.novak//AppData//Roaming//gnupg
+						Podporovan? algoritmy:
+						Verejn? kl?c: RSA, ELG, DSA
+						?ifra: 3DES (S2), CAST5 (S3), BLOWFISH (S4), AES (S7), AES192 (S8), 
+						       AES256 (S9), TWOFISH (S10), CAMELLIA128 (S11), CAMELLIA192 (S12), 
+						       CAMELLIA256 (S13)
+						Hash: MD5 (H1), SHA1 (H2), RIPEMD160 (H3), SHA256 (H8), SHA384 (H9), 
+						      SHA512 (H10), SHA224 (H11)
+						Komprese: Nezkomprimov?no (Z0), ZIP (Z1), ZLIB (Z2), BZIP2 (Z3)"
+
+						
+						
+						
+						
+		

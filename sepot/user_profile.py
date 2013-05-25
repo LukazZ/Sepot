@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+# -*- coding: utf-8 -*- 
 '''
 Created on 16.10.2012
 
@@ -28,7 +27,7 @@ class user_profile():
     Stores and manipulates user related information including GPG keys    
     '''
     
-    gpg = None                          # GnuPG class instance
+    gpg = None                          # python-gnupg class instance
     gpg_home = ""                       # gnupg user directory ( in windows eg.:c:\Users\lukas.novak\AppData\Roaming\gnupg)
     user_name = ""                      # OS user name
     private_keys = None                 # Private keys list                 
@@ -81,8 +80,11 @@ class user_profile():
         '''
         Set GnuPG object with user's keys self.gpg_home        
         '''
-        self.gpg = gnupg.GPG(gnupghome=self.gpg_home)
-
+        print "^^^^^"
+        g = self.gpg_home
+        print type(g)
+        self.gpg = gnupg.GPG(gnupghome=u"%s" % g)
+        self.gpg.encoding = 'utf-8'
         # Flags for key existence check
         keys_publ_missing = False
         keys_priv_missing = False
@@ -119,11 +121,10 @@ class user_profile():
 
 
 
-#===============================================================================
-# When used NOT as a module (for debug)
-#===============================================================================
-if __name__ == '__main__':
+
+def main():
     u = user_profile()
+    print u.gpg_home
     keys = []
     for k in u.private_keys:
         keys.append("Private key: %s" % k["uids"])
@@ -132,6 +133,13 @@ if __name__ == '__main__':
     keys.sort()
     for key in keys:
         print key
-    
+
+
+
+#===============================================================================
+# When used NOT as a module (for debug)
+#===============================================================================
+if __name__ == '__main__':
+    main()
 
     
