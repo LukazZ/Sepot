@@ -2,6 +2,8 @@
 Created on 16.10.2012
 
 @author: lukas.novak.ext
+
+Error handling
 '''
 
 class error(Exception):

@@ -13,7 +13,7 @@
     <property name="default_height">400</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">document-open</property>
-    <property name="type_hint">dialog</property>
+    <property name="type_hint">normal</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="urgency_hint">True</property>

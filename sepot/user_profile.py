@@ -4,6 +4,14 @@
 Created on 16.10.2012
 
 @author: lukaz
+
+User profile class containing user GPG keys list and use GPG home
+
+Using:
+        python-gnupg - A Python wrapper for GnuPG
+        http://code.google.com/p/python-gnupg/
+        http://pythonhosted.org/python-gnupg/
+
 '''
 
 import os
@@ -12,16 +20,17 @@ import platform
 import getpass
 import gnupg
 import error
-from get_windows_user_shell_folders import get_windows_user_shell_folders
+from avail import get_windows_user_shell_folders
 
 
 class user_profile():
     '''
     Stores and manipulates user related information including GPG keys    
     '''
+    
+    gpg = None                          # GnuPG class instance
     gpg_home = ""                       # gnupg user directory ( in windows eg.:c:\Users\lukas.novak\AppData\Roaming\gnupg)
     user_name = ""                      # OS user name
-    gpg = None                          # GnuPG class instance
     private_keys = None                 # Private keys list                 
     public_keys = None                  # Public keys list
     
@@ -113,16 +122,16 @@ class user_profile():
 #===============================================================================
 # When used NOT as a module (for debug)
 #===============================================================================
-# if __name__ == '__main__':
-#     u = user_profile()
-#     combolist1 = []
-#     for k in u.private_keys:
-#         combolist1.append(k["uids"])
-#     for k in u.public_keys:
-#         combolist1.append(k["uids"])
-#     combolist1.sort()
-#     for row in combolist1:
-#         print row
+if __name__ == '__main__':
+    u = user_profile()
+    keys = []
+    for k in u.private_keys:
+        keys.append("Private key: %s" % k["uids"])
+    for k in u.public_keys:
+        keys.append("Public key: %s" % k["uids"])
+    keys.sort()
+    for key in keys:
+        print key
     
 
     
