@@ -23,8 +23,10 @@ def addtext(TV,text,clear_first):
 
  
 def get_windows_user_shell_folders():
-    # Routine to grab all the Windows Shell Folder locations from the registry.  If successful, returns dictionary
-    # of shell folder locations indexed on Windows keyword for each; otherwise, returns an empty dictionary.
+    '''
+    Function determines Windows Shell Folder locations from the registry.  If successful, returns dictionary
+    of shell folder locations indexed on Windows keyword for each; otherwise, returns an empty dictionary.
+    '''
     import _winreg
     return_dict = {}
  
@@ -62,6 +64,10 @@ def get_windows_user_shell_folders():
         return {}
 
 
+def main():
+    pass
 
-# if __name__ == '__main__':
-#     pass
+if __name__ == '__main__':
+    main()
+
+    

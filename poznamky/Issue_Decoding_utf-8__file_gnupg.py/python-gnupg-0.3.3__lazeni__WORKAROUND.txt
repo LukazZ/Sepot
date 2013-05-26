@@ -90,4 +90,32 @@ NEFUNKCNI KONFIGURACE
 						
 						
 						
-		
+LUKAZ1010 WORKAROUND: ( publikovan na http://code.google.com/p/python-gnupg/issues/detail?id=65 )
+---------------------
+
+
+Hello 
+
+Workaround found for this issue! In file gnupg.py (line 557) is hardcoded 'utf-8' which throws an exception when local encoding is not utf-8 
+
+Simple workaround in gnupg.py (line 557):
+
+ORIGINAL:
+
+              m = VERSION_RE.match(result.data.decode('utf-8'))
+
+WORKAROUND:
+
+              m = VERSION_RE.match(result.data.decode(self.encoding))
+        
+
+
+Regards,
+lukaz1010
+
+
+
+GPG Version: gpg (GnuPG) 2.0.19 (Gpg4win 2.1.1-34299-beta)
+python-gnupg.py version: 0.3.3
+
+(With previous version python-gnupg.py 0.3.1 I had not this issue)

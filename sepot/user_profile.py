@@ -24,7 +24,10 @@ from avail import get_windows_user_shell_folders
 
 class user_profile():
     '''
-    Stores and manipulates user related information including GPG keys    
+    Stores and manipulates user related information including GPG keys   
+    
+    automatically determines gpg_home
+    retrieves curent user's public and private keys 
     '''
     
     gpg = None                          # python-gnupg class instance
@@ -55,7 +58,7 @@ class user_profile():
        
     def get_gpg_home(self):
         '''
-        Path for GnuPG user's home directory - automaticaly retrieved from environment 
+        Path for GnuPG user's home directory 
         '''
         gpg_home = ''
         try:
@@ -78,13 +81,10 @@ class user_profile():
 
     def gpg_init(self):
         '''
-        Set GnuPG object with user's keys self.gpg_home        
+        Instantiate python-gnupg's GPG class with user's keys self.gpg_home        
         '''
-        print "^^^^^"
-        g = self.gpg_home
-        print type(g)
-        self.gpg = gnupg.GPG(gnupghome=u"%s" % g)
-        self.gpg.encoding = 'utf-8'
+        self.gpg = gnupg.GPG(gnupghome=self.gpg_home)
+        #self.gpg.encoding = 'utf-8'
         # Flags for key existence check
         keys_publ_missing = False
         keys_priv_missing = False
@@ -135,10 +135,6 @@ def main():
         print key
 
 
-
-#===============================================================================
-# When used NOT as a module (for debug)
-#===============================================================================
 if __name__ == '__main__':
     main()
 
