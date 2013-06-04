@@ -6,7 +6,7 @@ Created on 21.5.2013
 small avail functions
 '''
 
-def addtext(TV,text,clear_first):
+def lineadd(TV,text,clear_first):
     '''
     Adds new line of text into TextViewer object     
     :param TV: TextView widget
@@ -16,12 +16,33 @@ def addtext(TV,text,clear_first):
     atbuffer = TV.get_buffer()
     atiter = atbuffer.get_iter_at_mark(atbuffer.get_insert())
     if clear_first:
-        atbuffer.set_text("")
-        print "textbuffer is emptied"
-    atbuffer.insert(atiter,"%s\n"%text)   # use "\n" for newlines        
+        atbuffer.set_text(text)
+    else:
+        atbuffer.insert(atiter,"%s\n"%text)   # use "\n" for newlines        
 
+def linesget(TV):
+    '''
+    Get all lines from textview into list_old
+    :param TV: gtk.textview
+    '''
+    buff = TV.get_buffer()
+    text_old = buff.get_text(buff.get_start_iter(), buff.get_end_iter(), include_hidden_chars=True)
+    return text_old.split()
 
- 
+def linesset(TV, list_new):
+    '''
+    Sets new sorted text for TV
+    :param TV: gtk.textview
+    :list_new is list of lines (strings) to be displayed in TV
+    '''
+    # Display list_new in textview
+    text_new = ""
+    for i in sorted(list_new):
+        text_new = text_new + i + "\n"
+    lineadd(TV,text_new,True)
+    
+    
+
 def get_windows_user_shell_folders():
     '''
     Function determines Windows Shell Folder locations from the registry.  If successful, returns dictionary

@@ -26,8 +26,9 @@ pygtk.require('2.0')
 import sys
 import urllib
 from user_profile import user_profile
-from avail import addtext
-
+from avail import lineadd 
+from avail import linesget
+from avail import linesset
 #garbage collector
 gc.enable()
 
@@ -44,7 +45,7 @@ class gpgui(object):
     except:
         error.message(object, msg=("ERROR: \"%s\": No such file or directory " % glade_GtkBuilder_XML), use_console=True)
         sys.exit(1)
-
+    # GtkBuilder objects mapping
     windowMain = builder.get_object("windowMain")
     windowHelp = builder.get_object("windowHelp")
     fileChooser = builder.get_object("fileChooser")
@@ -52,10 +53,11 @@ class gpgui(object):
     textview1 = builder.get_object("textview1")
     vbox2 = builder.get_object("vbox2")
     accellabel1 = builder.get_object("accellabel1")
-    
+    checkboxFileChooserHiddenFiles = builder.get_object("checkboxFileChooserHiddenFiles")
         
     # Events local accomodation
     event_ACTION_COPY = gtk.gdk.ACTION_COPY     # @UndefinedVariable
+    event_ACTION_DEFAULT = gtk.gdk.ACTION_DEFAULT # @UndefinedVariable
     event_NOTHING = gtk.gdk.NOTHING             # @UndefinedVariable
 
     # User object holds user details and his private and public keys
@@ -73,27 +75,30 @@ class gpgui(object):
             path = uri[7:] # 7 is len('file://')
         elif uri.startswith('file:'): # xffm
             path = uri[5:] # 5 is len('file:')
-    
         path = urllib.url2pathname(path) # escape special chars
         path = path.strip('\r\n\x00') # remove \r\n and NULL
         return path
 
-
     # Events signal handlers for GUI
     def on_drag_data_received(self,widget, context, x, y, selection, target_type, timestamp):
         '''
-        Utilizing function from "Drag Open File" snippet by Rich Jones <rich@anomos.info> under GPL     
+        On Drop event
         '''
         uri = selection.data.strip('\r\n\x00')
         uri_splitted = uri.split() # we may have more than one file dropped
         for uri in uri_splitted:
             path = self.get_file_path_from_dnd_dropped_uri(uri)
-            if os.path.isfile(path): # is it file?
-                # your_open_file_function(path)
-                # You might also want to look at the File Chooser snippet
-                addtext(self.textview1,path,False)
-                # If you actually want to read the data in the file, use
-                # data = file(path).read()
+            # Add all to textview (to be sorted and made unique later)
+            lineadd(self.textview1,path,False)
+        # Get all lines from textview
+        list_old = linesget(self.textview1)        
+        # Add only unique items only into list_new
+        list_new = []
+        for i in sorted(list_old):
+            if not i in list_new:
+                list_new.append(i)
+        # Refresh textview
+        linesset(self.textview1,list_new)
     
     def on_windowMain_destroy(self, data=None):
         """ on_windowMain_destroy """
@@ -128,12 +133,13 @@ class gpgui(object):
         print "Event: on_menuFileSelect_activate"
         self.fileChooser.show()
         
+        
     def on_fileChooser_delete_event(self, widget, event, data=None):
         """on_fileChooser_delete_event"""
         print "Event: on_fileChooser_delete_event"
         self.fileChooser.hide()
         return True
-    
+
     def on_buttonFileChooserClose_clicked(self, widget):
         """ on_buttonFileChooserClose_activate """
         print "Event: on_buttonFileChooserClose_activate"
@@ -141,16 +147,19 @@ class gpgui(object):
         return True
                    
     def on_buttonFileChooserOK_clicked(self, widget):
-        newfiles = self.fileChooser.get_filenames()
-        print newfiles
-        for file in newfiles:
-            addtext(self.textview1,file,False)
-            
-#         filestat modified for self file existence check and can be implemented    
-            
+        # Get all lines from textview and merge it with newfiles from filechooser
+        list_old = linesget(self.textview1) + self.fileChooser.get_filenames()        
+        # Add only unique items only into list_new
+        list_new = []
+        for i in sorted(list_old):
+            if not i in list_new:
+                list_new.append(i)
+        # Refresh textview
+        linesset(self.textview1,list_new)
+        self.fileChooser.hide()
         return True
                     
-    def on_windowHelp_delete_event(self, widget, event, data=None):
+    def on_windowHelp_delete_event(self, widget, event, data=None):   
         """
         on_windowHelp_delete_event
         If you return FALSE in the "delete_event" signal handler,
@@ -169,7 +178,7 @@ class gpgui(object):
     #===========================================================================
     def __init__(self):
          
-        # connect signals
+        # Connect signals
         self.builder.connect_signals(self)
 
         # set initial variables and object properties
@@ -178,19 +187,19 @@ class gpgui(object):
         font = pango.FontDescription("Courier 8")
         self.log.modify_font(font)
         
-        # getting user profile data eg. pgp keys
-        addtext(self.log,"user.gpg_home: %s"%self.user.gpg_home, False)
+        # Get user profile data eg. pgp keys
+        lineadd(self.log,"user.gpg_home: %s"%self.user.gpg_home, False)
         
-        # adding dynamically created objects to builder
+        # Adding dynamically created objects to builder
         combolist1 = []
 
         for k in self.user.private_keys:
             combolist1.append("Decript with private key: %s"%k["uids"][0])
-            addtext(self.log,"(Priv) %s"%k["uids"][0], False)
+            lineadd(self.log,"(Priv) %s"%k["uids"][0], False)
         
         for k in self.user.public_keys:
             combolist1.append("Encrypt with public key: %s"%k["uids"][0])
-            addtext(self.log,"(Publ) %s"%k["uids"][0], False)
+            lineadd(self.log,"(Publ) %s"%k["uids"][0], False)
         
         combolist1.sort()
         self.combobox1 = gtk.combo_box_new_text()
@@ -207,15 +216,15 @@ class gpgui(object):
         self.vbox2.pack_start(self.combobox1, expand=True, fill=True, padding=4)
         
 
-        
-        
-        gtk.window_set_default_icon_name(gtk.STOCK_DIALOG_AUTHENTICATION)
         TARGET_TYPE_URI_LIST = 80
         dnd_list = [ ( 'text/uri-list', 0, TARGET_TYPE_URI_LIST ) ]
         self.textview1.connect('drag_data_received', self.on_drag_data_received)
         self.textview1.drag_dest_set( gtk.DEST_DEFAULT_MOTION |
                           gtk.DEST_DEFAULT_HIGHLIGHT | gtk.DEST_DEFAULT_DROP,
-                          dnd_list, self.event_ACTION_COPY)
+                          dnd_list, self.event_ACTION_DEFAULT)
+
+
+
        
     def main(self):
         self.windowMain.show()
