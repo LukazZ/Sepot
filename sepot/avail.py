@@ -15,6 +15,7 @@ def lineadd(TV,text,clear_first):
     '''
     atbuffer = TV.get_buffer()
     atiter = atbuffer.get_iter_at_mark(atbuffer.get_insert())
+    print "lineadd: %s" % text
     if clear_first:
         atbuffer.set_text(text)
     else:
@@ -27,7 +28,7 @@ def linesget(TV):
     '''
     buff = TV.get_buffer()
     text_old = buff.get_text(buff.get_start_iter(), buff.get_end_iter(), include_hidden_chars=True)
-    return text_old.split()
+    return text_old.strip('\r\n\x00').split('\n')
 
 def linesset(TV, list_new):
     '''

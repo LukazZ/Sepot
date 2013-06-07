@@ -18,10 +18,9 @@ import error
 #import files
 import gc
 import gtk
-#from idlelib.textView import TextViewer
-import os
 import pango
 import pygtk
+from Queue import Empty
 pygtk.require('2.0')
 import sys
 import urllib
@@ -29,7 +28,6 @@ from user_profile import user_profile
 from avail import lineadd 
 from avail import linesget
 from avail import linesset
-#garbage collector
 gc.enable()
 
 class gpgui(object):
@@ -85,14 +83,15 @@ class gpgui(object):
         On Drop event
         '''
         uri = selection.data.strip('\r\n\x00')
-        uri_splitted = uri.split() # we may have more than one file dropped
+        uri_splitted = uri.split() # More than one file dropped
         for uri in uri_splitted:
             path = self.get_file_path_from_dnd_dropped_uri(uri)
             # Add all to textview (to be sorted and made unique later)
-            lineadd(self.textview1,path,False)
+            lineadd(self.textview1,"%s" % path,False)
+
         # Get all lines from textview
         list_old = linesget(self.textview1)        
-        # Add only unique items only into list_new
+        # Making unique list from list_old in case already file present is about to be add again
         list_new = []
         for i in sorted(list_old):
             if not i in list_new:
@@ -149,6 +148,9 @@ class gpgui(object):
     def on_buttonFileChooserOK_clicked(self, widget):
         # Get all lines from textview and merge it with newfiles from filechooser
         list_old = linesget(self.textview1) + self.fileChooser.get_filenames()        
+        # Remove initial empty line from textview's buffer 
+        if list_old[0] == '':
+            list_old = list_old[1:]
         # Add only unique items only into list_new
         list_new = []
         for i in sorted(list_old):
@@ -158,7 +160,7 @@ class gpgui(object):
         linesset(self.textview1,list_new)
         self.fileChooser.hide()
         return True
-                    
+
     def on_windowHelp_delete_event(self, widget, event, data=None):   
         """
         on_windowHelp_delete_event
