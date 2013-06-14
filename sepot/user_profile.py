@@ -20,7 +20,9 @@ import getpass
 import gnupg
 import error
 from avail import get_windows_user_shell_folders
+import logging
 
+user_profile_log = logging.getLogger('sepot.user_profile')
 
 class user_profile():
     '''
@@ -29,7 +31,6 @@ class user_profile():
     automatically determines gpg_home
     retrieves curent user's public and private keys 
     '''
-    
     gpg = None                          # python-gnupg class instance
     gpg_home = ""                       # gnupg user directory ( in windows eg.:c:\Users\lukas.novak\AppData\Roaming\gnupg)
     user_name = ""                      # OS user name
@@ -124,7 +125,10 @@ class user_profile():
 
 def main():
     u = user_profile()
-    print u.gpg_home
+    msg = "GPG user home directory: %s " % u.gpg_home 
+    user_profile_log.info(msg)
+
+
     keys = []
     for k in u.private_keys:
         keys.append("Private key: %s" % k["uids"])

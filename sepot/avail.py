@@ -5,6 +5,8 @@ Created on 21.5.2013
 
 small avail functions
 '''
+import logging
+avail_log = logging.getLogger('sepot.avail')
 
 def lineadd(TV,text,clear_first):
     '''
@@ -15,7 +17,7 @@ def lineadd(TV,text,clear_first):
     '''
     atbuffer = TV.get_buffer()
     atiter = atbuffer.get_iter_at_mark(atbuffer.get_insert())
-    print "lineadd: %s" % text
+    #avail_log.info(text)
     if clear_first:
         atbuffer.set_text(text)
     else:
@@ -23,12 +25,15 @@ def lineadd(TV,text,clear_first):
 
 def linesget(TV):
     '''
-    Get all lines from textview into list_old
+    Returns all lines from textview
     :param TV: gtk.textview
     '''
     buff = TV.get_buffer()
     text_old = buff.get_text(buff.get_start_iter(), buff.get_end_iter(), include_hidden_chars=True)
-    return text_old.strip('\r\n\x00').split('\n')
+    if text_old == "":
+        return ()
+    else:
+        return text_old.strip('\r\n\x00').split('\n')
 
 def linesset(TV, list_new):
     '''
@@ -38,10 +43,14 @@ def linesset(TV, list_new):
     '''
     # Display list_new in textview
     text_new = ""
+    cnt = 0
+    avail_log.info("File list update")
     for i in sorted(list_new):
         text_new = text_new + i + "\n"
+        cnt += 1
+        avail_log.info("File %s of %s: %s" %(cnt,len(list_new),i) )
     lineadd(TV,text_new,True)
-    
+
     
 
 def get_windows_user_shell_folders():

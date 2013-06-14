@@ -6,6 +6,9 @@ Created on 25.5.2013
 Class for storing selected files properties providing files operations
 '''
 
+import logging
+files_log = logging.getLogger('sepot.files')
+
 class files():
     '''
     List of unique selected files represented by instances of filestat class 

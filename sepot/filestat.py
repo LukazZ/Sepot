@@ -8,9 +8,11 @@ File protperties class
 
 import os
 import sys
-from datetime import datetime
+#from datetime import datetime
 from UserDict import UserDict
 import error
+import logging
+filestat_log = logging.getLogger('sepot.filestat')
 
 class filestat(UserDict):
     '''

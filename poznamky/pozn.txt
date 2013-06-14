@@ -1,0 +1,12 @@
+
+
+Nabidka zasifrovani:
+
+
+2) Create compressed archive of all selected files and encrypt it
+3) Encrypt each file separately
+
+
+
+
+C:\lukaz\EclipseWorkspace\Sepot

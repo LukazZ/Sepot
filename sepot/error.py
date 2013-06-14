@@ -5,6 +5,9 @@ Created on 16.10.2012
 
 Error handling
 '''
+import logging
+error_log = logging.getLogger('sepot.error')
+
 
 class error(Exception):
     '''
@@ -44,8 +47,8 @@ def message(self, msg, use_console):
     :param use_console: when True output will be forked to console too
     '''
     import gtk
-    if use_console: print msg
-    
+    #if use_console: print msg
+    error_log.error((msg.replace('\n',' ')).replace('  ',' ').replace('ERROR: ',''))    
     dialog = gtk.MessageDialog(None,
                                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
@@ -53,6 +56,3 @@ def message(self, msg, use_console):
     dialog.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
     dialog.run()
     dialog.destroy()
-
-
-
