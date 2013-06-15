@@ -123,27 +123,27 @@ class gpgui(object):
         On Drop event
         '''
         
-        log.debug("selection.get_format:    %s" %selection.get_format)
-        log.debug("selection.get_length:    %s" %selection.get_length)
-        log.debug("selection.get_pixbuf:    %s" %selection.get_pixbuf)
-        log.debug("selection.get_selection:    %s" %selection.get_selection)
-        log.debug("selection.get_target:    %s" %selection.get_target)
-        log.debug("selection.get_targets:    %s" %selection.get_targets)
-        log.debug("selection.get_text:    %s" %selection.get_text)
-        log.debug("selection.get_uris:    %s" %selection.get_uris)
-        log.debug("selection.target:    %s" %selection.target)
-        log.debug("selection.targets_include_image:    %s" %selection.targets_include_image)
-        log.debug("selection.targets_include_rich_text:    %s" %selection.targets_include_rich_text)
-        log.debug("selection.targets_include_text:    %s" %selection.targets_include_text)
-        log.debug("selection.targets_include_uri:    %s" %selection.targets_include_uri)
-        log.debug("selection.tree_get_row_drag_data:    %s" %selection.tree_get_row_drag_data)
-        log.debug("selection.tree_set_row_drag_data:    %s" %selection.tree_set_row_drag_data)
-        log.debug("selection.type:    %s" %selection.type)
-        log.debug("selection.data:    %s" %selection.data)
+        #         log.debug("selection.get_format:    %s" %selection.get_format)
+        #         log.debug("selection.get_length:    %s" %selection.get_length)
+        #         log.debug("selection.get_pixbuf:    %s" %selection.get_pixbuf)
+        #         log.debug("selection.get_selection:    %s" %selection.get_selection)
+        #         log.debug("selection.get_target:    %s" %selection.get_target)
+        #         log.debug("selection.get_targets:    %s" %selection.get_targets)
+        #         log.debug("selection.get_text:    %s" %selection.get_text)
+        #         log.debug("selection.get_uris:    %s" %selection.get_uris)
+        #         log.debug("selection.target:    %s" %selection.target)
+        #         log.debug("selection.targets_include_image:    %s" %selection.targets_include_image)
+        #         log.debug("selection.targets_include_rich_text:    %s" %selection.targets_include_rich_text)
+        #         log.debug("selection.targets_include_text:    %s" %selection.targets_include_text)
+        #         log.debug("selection.targets_include_uri:    %s" %selection.targets_include_uri)
+        #         log.debug("selection.tree_get_row_drag_data:    %s" %selection.tree_get_row_drag_data)
+        #         log.debug("selection.tree_set_row_drag_data:    %s" %selection.tree_set_row_drag_data)
+        #         log.debug("selection.type:    %s" %selection.type)
+        #         log.debug("selection.data:    %s" %selection.data)
         uri = selection.data.strip('\r\n\x00')
-        log.info("uri: %s " % uri)
-        
         uri_splitted = uri.split() # More than one file dropped
+
+        log.info("uri: %s " % uri)
         log.info("uri splitted: %s " % uri_splitted)
         for uri in uri_splitted:
             path = self.get_file_path_from_dnd_dropped_uri(uri)
@@ -155,6 +155,10 @@ class gpgui(object):
         # Making unique list from list_old in case already file present is about to be add again
         list_new = []
         for i in sorted(list_old):
+            
+        # !!! appending new filename to the end of existing one due to the cursor position
+        # can search in old list for fragment of "new_file" if present parse new file name from the screwed old~hybrid~name
+            
             if not i in list_new:
                 list_new.append(i)
 
@@ -258,6 +262,12 @@ class gpgui(object):
         self.radioButtonSettings06.connect("toggled", self.on_radioButtonSettings05_toggled, "radioButtonSettings06")
         self.combobox1 = gtk.combo_box_new_text()
         self.combobox1.connect("changed", self.on_combobox1_change)
+        TARGET_TYPE_URI_LIST = 80
+        dnd_list = [ ( 'text/uri-list', 0, TARGET_TYPE_URI_LIST ) ]
+        self.textview1.connect('drag_data_received', self.on_textview1_drag_data_received)
+        self.textview1.drag_dest_set( gtk.DEST_DEFAULT_MOTION |
+                          gtk.DEST_DEFAULT_HIGHLIGHT | gtk.DEST_DEFAULT_DROP,
+                          dnd_list, self.event_ACTION_COPY)
 
         
         # Adding dynamically created objects to builder
@@ -283,12 +293,6 @@ class gpgui(object):
         # Put combobox1 into hbox2  
         self.vbox2.pack_start(self.combobox1, expand=True, fill=True, padding=4)
 
-        TARGET_TYPE_URI_LIST = 80
-        dnd_list = [ ( 'text/uri-list', 0, TARGET_TYPE_URI_LIST ) ]
-        #self.textview1.connect('drag_data_received', self.on_textview1_drag_data_received)
-        self.textview1.drag_dest_set( gtk.DEST_DEFAULT_MOTION |
-                          gtk.DEST_DEFAULT_HIGHLIGHT | gtk.DEST_DEFAULT_DROP,
-                          dnd_list, self.event_ACTION_DEFAULT)
        
     def main(self):
         self.windowMain.show()
