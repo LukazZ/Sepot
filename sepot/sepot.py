@@ -66,14 +66,41 @@ class gpgui(object):
     
     # GtkBuilder objects mapping
     windowMain = builder.get_object("windowMain")
+    windowSettings = builder.get_object("windowSettings")
     windowHelp = builder.get_object("windowHelp")
     fileChooser = builder.get_object("fileChooser")
-    log = builder.get_object("log")
     textview1 = builder.get_object("textview1")
     vbox2 = builder.get_object("vbox2")
     accellabel1 = builder.get_object("accellabel1")
     checkboxFileChooserHiddenFiles = builder.get_object("checkboxFileChooserHiddenFiles")
+    optionsFrame1 = builder.get_object('optionsFrame1')
+    optionsFrame2 = builder.get_object('optionsFrame2')
+    optionsFrame3 = builder.get_object('optionsFrame3')
+    optionsFrame4 = builder.get_object('optionsFrame4')
+    optionsFrame5 = builder.get_object('optionsFrame5')
+    optionsFrame6 = builder.get_object('optionsFrame6')
+    settingsOutputDirectoryChooser = builder.get_object('settingsOutputDirectoryChooser')
+    radioButtonSettings05 = builder.get_object('radioButtonSettings05')
+    radioButtonSettings06 = builder.get_object('radioButtonSettings06')
 
+
+    def on_radioButtonSettings05_toggled(self, widget, data=None):
+        if data == "radioButtonSettings05" and widget.get_active:
+            log.info("radioButtonSettings05 vybrano")
+            self.settingsOutputDirectoryChooser.enabled = False
+        else:
+            log.info("radioButtonSettings06 vybrano")
+            self.settingsOutputDirectoryChooser.enabled = True
+            
+
+        
+    
+    def on_buttonSettingsSave_clicked(self, widget):
+        log.info("->>> SAVE SETTINGS NOW!")
+        self.windowSettings.hide()
+
+    def on_buttonSettingsClose_clicked(self, widget):
+        self.windowSettings.hide()
 
     def get_file_path_from_dnd_dropped_uri(self,uri):
         '''
@@ -91,16 +118,33 @@ class gpgui(object):
         path = path.strip('\r\n\x00') # remove \r\n and NULL
         return path
 
-    # Events signal handlers for GUI
-    #def on_drag_data_received(self,widget, context, x, y, selection, target_type, timestamp):
     def on_textview1_drag_data_received(self,widget, context, x, y, selection, target_type, timestamp):
         '''
         On Drop event
         '''
+        
+        log.debug("selection.get_format:    %s" %selection.get_format)
+        log.debug("selection.get_length:    %s" %selection.get_length)
+        log.debug("selection.get_pixbuf:    %s" %selection.get_pixbuf)
+        log.debug("selection.get_selection:    %s" %selection.get_selection)
+        log.debug("selection.get_target:    %s" %selection.get_target)
+        log.debug("selection.get_targets:    %s" %selection.get_targets)
+        log.debug("selection.get_text:    %s" %selection.get_text)
+        log.debug("selection.get_uris:    %s" %selection.get_uris)
+        log.debug("selection.target:    %s" %selection.target)
+        log.debug("selection.targets_include_image:    %s" %selection.targets_include_image)
+        log.debug("selection.targets_include_rich_text:    %s" %selection.targets_include_rich_text)
+        log.debug("selection.targets_include_text:    %s" %selection.targets_include_text)
+        log.debug("selection.targets_include_uri:    %s" %selection.targets_include_uri)
+        log.debug("selection.tree_get_row_drag_data:    %s" %selection.tree_get_row_drag_data)
+        log.debug("selection.tree_set_row_drag_data:    %s" %selection.tree_set_row_drag_data)
+        log.debug("selection.type:    %s" %selection.type)
+        log.debug("selection.data:    %s" %selection.data)
         uri = selection.data.strip('\r\n\x00')
-        log.debug(uri)
+        log.info("uri: %s " % uri)
+        
         uri_splitted = uri.split() # More than one file dropped
-        log.info(uri_splitted)
+        log.info("uri splitted: %s " % uri_splitted)
         for uri in uri_splitted:
             path = self.get_file_path_from_dnd_dropped_uri(uri)
             # Add all to textview (to be sorted and made unique later)
@@ -114,9 +158,6 @@ class gpgui(object):
             if not i in list_new:
                 list_new.append(i)
 
-        # Refresh textview
-#         if len(linesget(self.textview1)) == 0:
-#             linesset(self.textview1,())
         linesset(self.textview1,list_new)
 
     
@@ -132,12 +173,19 @@ class gpgui(object):
 
     def on_buttonProcess_clicked(self, widget):
         """ on_buttonProcess_clicked """
+        self.textview1.place_cursor_onscreen()
+        #self.textview1.scroll_to_iter(self.textview1.get_buffer().get_end_iter())
         log.debug("Pocet soubory %s" %(len(linesget(self.textview1))) )
-        
     
     def on_combobox1_change(self, widget):
         """ on_combobox1_change - PGP Key selection changes """
         log.info("Action selected - %s" % self.combobox1.get_active_text() )
+
+    def on_menuOptionSettings_activate(self, widget):
+        """ Activate settings window"""
+        self.windowSettings.show()
+        
+        
 
     def on_menuHelpAbout_activate(self, widget):
         """ on_menuHelpAbout_activate """
@@ -178,14 +226,18 @@ class gpgui(object):
         self.fileChooser.hide()
         return True
 
+    def on_windowSettings_delete_event(self, widget, event, data=None):
+        """
+        on_windowSettings_delete_event
+        If you return FALSE in the "delete_event" signal handler, GTK will emit the "destroy" signal. Returning TRUE means
+        you don't want the window to be destroyed. This is useful for popping up 'are you sure you want to quit?' type dialogs
+        """
+        self.windowSettings.hide()
+        return True
+
     def on_windowHelp_delete_event(self, widget, event, data=None):   
         """
         on_windowHelp_delete_event
-        If you return FALSE in the "delete_event" signal handler,
-        GTK will emit the "destroy" signal. Returning TRUE means
-        you don't want the window to be destroyed.
-        This is useful for popping up 'are you sure you want to quit?'
-        type dialogs.
         """
         self.windowHelp.hide()
         return True
@@ -199,12 +251,14 @@ class gpgui(object):
         # Connect signals
         self.builder.connect_signals(self)
 
-        # set initial variables and object properties
+        # Set initial properties
         self.filename = None
         self.about_dialog = None
-        #font = pango.FontDescription("Courier 8")
-        #self.log.modify_font(font)
-        
+        self.radioButtonSettings05.connect("toggled", self.on_radioButtonSettings05_toggled, "radioButtonSettings05")
+        self.radioButtonSettings06.connect("toggled", self.on_radioButtonSettings05_toggled, "radioButtonSettings06")
+        self.combobox1 = gtk.combo_box_new_text()
+        self.combobox1.connect("changed", self.on_combobox1_change)
+
         
         # Adding dynamically created objects to builder
         combolist1 = []
@@ -218,8 +272,6 @@ class gpgui(object):
             log.info("Found public key: %s"%k["uids"][0])
         
         combolist1.sort()
-        self.combobox1 = gtk.combo_box_new_text()
-        self.combobox1.connect("changed", self.on_combobox1_change)
         
         for row in combolist1:
             self.combobox1.append_text(row)
@@ -230,7 +282,6 @@ class gpgui(object):
 
         # Put combobox1 into hbox2  
         self.vbox2.pack_start(self.combobox1, expand=True, fill=True, padding=4)
-        
 
         TARGET_TYPE_URI_LIST = 80
         dnd_list = [ ( 'text/uri-list', 0, TARGET_TYPE_URI_LIST ) ]
@@ -238,19 +289,10 @@ class gpgui(object):
         self.textview1.drag_dest_set( gtk.DEST_DEFAULT_MOTION |
                           gtk.DEST_DEFAULT_HIGHLIGHT | gtk.DEST_DEFAULT_DROP,
                           dnd_list, self.event_ACTION_DEFAULT)
-
-
-
        
     def main(self):
         self.windowMain.show()
         gtk.main()
-
-
-
-#===============================================================================
-# Main Run
-#===============================================================================
 
 if __name__ == "__main__":
     gui = gpgui()

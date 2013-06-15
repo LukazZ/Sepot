@@ -30,10 +30,10 @@ def linesget(TV):
     '''
     buff = TV.get_buffer()
     text_old = buff.get_text(buff.get_start_iter(), buff.get_end_iter(), include_hidden_chars=True)
-    if text_old == "":
-        return ()
-    else:
-        return text_old.strip('\r\n\x00').split('\n')
+    #if text_old == "":
+        #return ()
+    #else:
+    return text_old.strip('\r\n\x00').split('\n')
 
 def linesset(TV, list_new):
     '''
