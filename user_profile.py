@@ -52,7 +52,7 @@ class UserProfile():
             else:
                 raise IOError
         except IOError:
-            gui_error.ErrorMessage(self, "ERROR:\n\nSpecified GnuPG user's home directory: %s doesn't exist." % (gpg_homedir), use_console=True)
+            gui_error.ErrorMessage("Specified GPG user home directory: {0} doesn't exist.".format(gpg_homedir), logit=True)
             sys.exit(1)
        
     def get_gpg_home(self):
@@ -69,19 +69,19 @@ class UserProfile():
             if gpg_home == '':
                 raise IOError       
         except IOError:
-            gui_error.ErrorMessage(self, "ERROR:\n\nUser home directory detection failed. OS detection failed.\nPlease use method set_gpg_home", use_console=True)
+            gui_error.ErrorMessage("User home directory detection failed. OS detection failed.\nPlease use method set_gpg_home", logit=True)
             sys.exit(1)
         try:
             if (os.path.isdir(gpg_home)):
                 return gpg_home
             raise IOError
         except IOError:
-            gui_error.ErrorMessage(self, "ERROR:\nGnuPG user's home directory:\n%s\n\ndoesn't exist.\nIs GnuPG software installed on your system?" % (gpg_home), use_console=True)
+            gui_error.ErrorMessage("GPG user home directory: {0} ndoesn't exist. Is the GPG installed on your system?".format(gpg_home), logit=True)
             sys.exit(1)
 
     def gpg_init(self):
         '''
-        Instantiate python-gnupg's GPG class with user's keys self.gpg_home        
+        Initializate GPG object
         '''
         self.gpg = gnupg.GPG(gnupghome=self.gpg_home)
         #self.gpg.encoding = 'utf-8'
@@ -103,7 +103,7 @@ class UserProfile():
             if keys_publ_missing and keys_priv_missing:
                 raise IOError
         except IOError:
-            gui_error.ErrorMessage(self, "ERROR:\n\nNo public or private key(s) found in\n\n%s\n\nfor user: %s\n\nYou can import or create your keys using GnuPG program.     " %(self.gpg_home, self.user_name), use_console=True)
+            gui_error.ErrorMessage("No public nor private key(s) found in {0} for user: {1} \nPlease import or create your keys using gpg program.".format(self.gpg_home, self.user_name), logit=True)
             sys.exit(1)
 
     def get_public_keys(self):
