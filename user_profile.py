@@ -76,7 +76,7 @@ class UserProfile():
                 return gpg_home
             raise IOError
         except IOError:
-            gui_error.ErrorMessage("GPG user home directory: {0} ndoesn't exist. Is the GPG installed on your system?".format(gpg_home), logit=True)
+            gui_error.ErrorMessage("GPG user home directory: {0} doesn't exist. Is the GPG installed on your system?".format(gpg_home), logit=True)
             sys.exit(1)
 
     def gpg_init(self):
