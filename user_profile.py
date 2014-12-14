@@ -7,9 +7,7 @@ Created on 16.10.2012
 User profile class containing user GPG keys list and use GPG home
 
 Using:
-        python-gnupg - A Python wrapper for GnuPG
-        http://code.google.com/p/python-gnupg/
-        http://pythonhosted.org/python-gnupg/
+        python-gnupg - A Python wrapper for GnuPG https://github.com/isislovecruft/python-gnupg 
 
 '''
 
@@ -19,20 +17,17 @@ import logging
 import os
 import platform
 import sys
-
 import gui_error
 
 
-#from sgpg import gui_error
-#from avail import get_windows_user_shell_folders
 user_profile_log = logging.getLogger('sepot.user_profile')
 
 class UserProfile():
     '''
-    Stores and manipulates user related information including GPG keys   
+    Holds user related information including GPG keys   
     
-    automatically determines gpg_home
-    retrieves curent user's public and private keys 
+    - Automatically determines gpg_home
+    - Retrieves current user's public and private keys 
     '''
     gpg = None                          # python-gnupg class instance
     gpg_home = ""                       # gnupg user directory ( in windows eg.:c:\Users\lukas.novak\AppData\Roaming\gnupg)
