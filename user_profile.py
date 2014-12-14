@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- 
 '''
-Created on 16.10.2012
+Created on 11.10.2014
 
 @author: lukaz@centrum.cz
 
