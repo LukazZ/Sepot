@@ -57,7 +57,7 @@ class FileStat(UserDict):
             sys.exit(1)
 
             
-    def is_gpgencrypted(self):
+    def is_gpg_encrypted(self):
         ''' Returns boolean flag checking if file is GPG encrypted '''
         identification_phase_1 = False
         identification_phase_2 = False
@@ -100,9 +100,6 @@ def approximate_size(size, a_kilobyte_is_1024_bytes=True):
 
     Returns: string
 
-    '''
-    SUFFIXES = {1000: ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                1024: ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']}
     # This function is under a
     #
     # Copyright (c) 2009, Mark Pilgrim, All rights reserved.
@@ -127,6 +124,11 @@ def approximate_size(size, a_kilobyte_is_1024_bytes=True):
     # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     # POSSIBILITY OF SUCH DAMAGE.
+
+
+    '''
+    SUFFIXES = {1000: ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                1024: ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']}
     
     if size < 0:
         raise ValueError('number must be non-negative')
@@ -146,11 +148,11 @@ if __name__ == '__main__':
     
     fc=FileStat('./test3/f2')
     fc.info()
-    print("Test if it's GPG encrypted file: {0}".format(fc.is_gpgencrypted()))
+    print("Test if it's GPG encrypted file: {0}".format(fc.is_gpg_encrypted()))
     
     fc=FileStat('./test3/f3.asc')
     fc.info()
-    print("Test if it's GPG encrypted file: {0}".format(fc.is_gpgencrypted()))
+    print("Test if it's GPG encrypted file: {0}".format(fc.is_gpg_encrypted()))
 
     
     exit(0)

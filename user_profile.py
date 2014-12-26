@@ -29,16 +29,16 @@ class UserProfile():
     - Automatically determines gpg_home
     - Retrieves current user's public and private keys 
     '''
-    gpg = None                          # python-gnupg class instance
-    gpg_home = ""                       # gnupg user directory ( in windows eg.:c:\Users\lukas.novak\AppData\Roaming\gnupg)
-    user_name = ""                      # OS user name
-    private_keys = None                 # Private keys list                 
-    public_keys = None                  # Public keys list
+
     
     def __init__(self):
-        self.user_name = getpass.getuser()
-        self.gpg_home = self.get_gpg_home()
+        self.private_keys = None                # Private keys list                 
+        self.public_keys = None                 # Public keys list
+        self.user_name = getpass.getuser()      # OS user name
+        self.gpg_home = self.get_gpg_home()     # gnupg user directory ( in windows eg.:c:\Users\lukas.novak\AppData\Roaming\gnupg)
+        self.gpg = None                         # python-gnupg class instance
         self.gpg_init()
+
 
     def set_gpg_home(self, gpg_homedir):
         '''
